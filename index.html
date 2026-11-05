@@ -3,182 +3,465 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prompt Engineering Masterclass & Interactive Platform</title>
+    <title>Prompt Engineering Masterclass & Interactive Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: #111827;
-            --text-color: #f3f4f6;
-            --text-muted: #9ca3af;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
             --accent: #6366f1;
             --accent-hover: #4f46e5;
-            --border: #1f2937;
-            --code-bg: #030712;
-            --success: #10b981;
+            --border: #334155;
+            --code-bg: #090d16;
         }
+
         [data-theme="light"] {
-            --bg-color: #f9fafb;
-            --card-bg: #ffffff;
-            --text-color: #111827;
-            --text-muted: #4b5563;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
             --accent: #4f46e5;
             --accent-hover: #4338ca;
-            --border: #e5e7eb;
-            --code-bg: #f3f4f6;
-            --success: #059669;
+            --border: #e2e8f0;
+            --code-bg: #1e293b;
         }
-        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
-        .hero { background: linear-gradient(135deg, var(--accent), #9333ea); color: white; padding: 40px 20px; text-align: center; }
-        .hero h1 { margin: 0; font-size: 2.2rem; }
-        .hero p { opacity: 0.9; margin-top: 10px; }
-        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
-        .top-bar { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 20px; }
-        button { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-        button:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        h2 { color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .module-box { background: var(--code-bg); border: 1px solid var(--border); padding: 20px; border-radius: 8px; transition: transform 0.2s; }
-        .module-box:hover { transform: translateY(-3px); border-color: var(--accent); }
-        .interactive-playground { background: var(--code-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border); margin-top: 15px; }
-        textarea, input[type="text"] { width: 100%; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); border-radius: 6px; padding: 10px; box-sizing: border-box; margin-top: 5px; font-family: inherit; }
-        .slider-group { margin: 15px 0; }
-        input[type="range"] { width: 100%; accent-color: var(--accent); }
-        .output-console { background: #000; color: #38bdf8; padding: 15px; border-radius: 6px; font-family: monospace; min-height: 60px; margin-top: 10px; white-space: pre-wrap; }
-        .quiz-option { display: block; width: 100%; text-align: left; margin: 8px 0; padding: 10px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
-        .quiz-option:hover { background: var(--accent); color: white; }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .bg-secondary-theme { background-color: var(--bg-secondary); }
+        .bg-card-theme { background-color: var(--bg-card); }
+        .border-theme { border-color: var(--border); }
+        .text-secondary-theme { color: var(--text-secondary); }
+        .code-bg-theme { background-color: var(--code-bg); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent);
+            color: white;
+            font-weight: 600;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col md:flex-row">
 
-    <div class="hero">
-        <h1>🚀 Prompt Engineering Masterclass</h1>
-        <p>Interactive platform built to explore LLMs, Prompt Design, Context Engineering & RAG Architecture.</p>
-    </div>
+    <!-- Sidebar Navigation -->
+    <aside class="w-full md:w-80 bg-secondary-theme border-r border-theme p-6 flex flex-col justify-between shrink-0">
+        <div>
+            <!-- Header Logo -->
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight gradient-text">Prompt Academy</h1>
+                    <span class="text-xs text-secondary-theme" id="subHeader">Interactive LLM Guide</span>
+                </div>
+            </div>
 
-    <div class="container">
-        <div class="top-bar">
-            <button onclick="toggleTheme()">🌓 Toggle Theme</button>
+            <!-- Top Controls (Theme & Language Toggle) -->
+            <div class="flex items-center gap-2 mb-6 p-1.5 bg-slate-800/40 rounded-xl border border-theme">
+                <button id="themeToggle" onclick="toggleTheme()" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 hover:bg-slate-700/50 transition">
+                    <i class="fa-solid fa-moon text-amber-400" id="themeIcon"></i>
+                    <span id="themeText">Dark Mode</span>
+                </button>
+                <button id="langToggle" onclick="toggleLanguage()" class="flex-1 py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 hover:bg-slate-700/50 transition border-l border-theme">
+                    <i class="fa-solid fa-globe text-indigo-400"></i>
+                    <span id="langText">EN</span>
+                </button>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="space-y-2" id="moduleNav">
+                <p class="text-xs font-semibold text-secondary-theme uppercase tracking-wider mb-2 px-3" id="navHeading">Course Modules</p>
+                <button onclick="switchTab('mod-1')" class="tab-btn w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 text-sm font-medium active" id="btn-mod-1">
+                    <i class="fa-solid fa-rocket text-indigo-400"></i>
+                    <span class="mod-title-1">01. Introduction</span>
+                </button>
+                <button onclick="switchTab('mod-2')" class="tab-btn w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 text-sm font-medium" id="btn-mod-2">
+                    <i class="fa-solid fa-microchip text-indigo-400"></i>
+                    <span class="mod-title-2">02. Understanding LLMs</span>
+                </button>
+                <button onclick="switchTab('mod-3')" class="tab-btn w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 text-sm font-medium" id="btn-mod-3">
+                    <i class="fa-solid fa-comments text-indigo-400"></i>
+                    <span class="mod-title-3">03. Chat Models</span>
+                </button>
+                <button onclick="switchTab('mod-4')" class="tab-btn w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 text-sm font-medium" id="btn-mod-4">
+                    <i class="fa-solid fa-cubes text-indigo-400"></i>
+                    <span class="mod-title-4">04. LLM Applications</span>
+                </button>
+                <button onclick="switchTab('mod-5')" class="tab-btn w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 text-sm font-medium" id="btn-mod-5">
+                    <i class="fa-solid fa-database text-indigo-400"></i>
+                    <span class="mod-title-5">05. Context & RAG</span>
+                </button>
+                <button onclick="switchTab('mod-6')" class="tab-btn w-full text-left px-4 py-3 rounded-xl transition flex items-center gap-3 text-sm font-medium" id="btn-mod-6">
+                    <i class="fa-solid fa-flask text-indigo-400"></i>
+                    <span class="mod-title-6">06. Interactive Lab</span>
+                </button>
+            </nav>
         </div>
 
-        <!-- MODULES SECTION -->
-        <div class="card">
-            <h2>📚 Course Modules & Comprehensive Content</h2>
-            <p>Explore the structured modules extracted and enhanced from the official repository notes:</p>
-            <div class="grid">
-                <div class="module-box">
-                    <h3>01. Introduction</h3>
-                    <p>Foundations of instruction tuning and effective prompting frameworks.</p>
-                    <a href="01-introduction.md" target="_blank">📄 View Raw Markdown</a>
-                </div>
-                <div class="module-box">
-                    <h3>02. Understanding LLMs</h3>
-                    <p>Deep dive into transformer architectures, pre-training, and scaling laws.</p>
-                    <a href="02-understanding-llms.md" target="_blank">📄 View Raw Markdown</a>
-                </div>
-                <div class="module-box">
-                    <h3>03. Chat Models</h3>
-                    <p>System instructions, role-playing, and conversation turn formatting.</p>
-                    <a href="03-chat-models.md" target="_blank">📄 View Raw Markdown</a>
-                </div>
-                <div class="module-box">
-                    <h3>04. LLM Application Design</h3>
-                    <p>Patterns, guardrails, chains, and building reliable AI workflows.</p>
-                    <a href="04-designing-llm-applications.md" target="_blank">📄 View Raw Markdown</a>
-                </div>
-                <div class="module-box">
-                    <h3>05. Context & RAG</h3>
-                    <p>Retrieval-Augmented Generation, vector embeddings, and context stuffing.</p>
-                    <a href="05-prompts-context-and-rag.md" target="_blank">📄 View Raw Markdown</a>
-                </div>
-                <div class="module-box">
-                    <h3>06. Laboratory Workbook</h3>
-                    <p>Practical hands-on exercises, evaluation criteria, and prompt templates.</p>
-                    <a href="06-laboratory-workbook.md" target="_blank">📄 View Raw Markdown</a>
-                </div>
-            </div>
+        <div class="mt-8 pt-4 border-t border-theme text-xs text-secondary-theme flex items-center justify-between">
+            <span>Status: Ready</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-medium">Live Website</span>
         </div>
+    </aside>
 
-        <!-- INTERACTIVE PLAYGROUND -->
-        <div class="card">
-            <h2>⚡ Interactive Prompt & Parameter Simulator</h2>
-            <p>Test how model hyperparameters change generation outputs dynamically:</p>
-            
-            <label><strong>System Instruction:</strong></label>
-            <input type="text" id="sysInput" value="You are an advanced AI engineering assistant." oninput="updateSimulation()">
+    <!-- Main Content Area -->
+    <main class="flex-1 p-6 md:p-10 max-w-5xl overflow-y-auto">
 
-            <label style="display:block; margin-top: 15px;"><strong>User Prompt:</strong></label>
-            <textarea id="userInput" oninput="updateSimulation()">Explain Retrieval-Augmented Generation in one sentence.</textarea>
-
-            <div class="slider-group">
-                <label><strong>Temperature (<span id="tempVal">0.7</span>):</strong> Controls randomness.</label>
-                <input type="range" id="tempRange" min="0" max="1" step="0.1" value="0.7" oninput="updateSimulation()">
+        <!-- MODULE 1: INTRODUCTION -->
+        <section id="mod-1" class="tab-content active space-y-8">
+            <div class="border-b border-theme pb-6">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-3 inline-block">Module 01</span>
+                <h2 class="text-3xl font-bold tracking-tight mb-2" id="m1-title">Introduction to Prompt Engineering</h2>
+                <p class="text-secondary-theme leading-relaxed" id="m1-desc">Discover the core principles of prompt engineering, instruction structure, and how to effectively command Generative AI models.</p>
             </div>
 
-            <div class="slider-group">
-                <label><strong>Top-P (<span id="topPVal">0.9</span>):</strong> Nucleus sampling threshold.</label>
-                <input type="range" id="topPRange" min="0.1" max="1" step="0.1" value="0.9" oninput="updateSimulation()">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="p-6 bg-card-theme rounded-2xl border border-theme shadow-sm">
+                    <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-lg mb-4">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">What is Prompt Engineering?</h3>
+                    <p class="text-sm text-secondary-theme leading-relaxed">It is the discipline of crafting, refining, and structuring text inputs to steer Generative AI models into producing consistent, high-precision outputs.</p>
+                </div>
+                <div class="p-6 bg-card-theme rounded-2xl border border-theme shadow-sm">
+                    <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center text-lg mb-4">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">The Four Core Pillars</h3>
+                    <p class="text-sm text-secondary-theme leading-relaxed"><strong>Clarity:</strong> Unambiguous language. <br><strong>Context:</strong> Relevant background info. <br><strong>Constraints:</strong> Format & length limits. <br><strong>Role:</strong> Explicit Persona assignment.</p>
+                </div>
             </div>
 
-            <div class="interactive-playground">
-                <strong>Simulated Model Output:</strong>
-                <div class="output-console" id="consoleOutput">Loading simulation response...</div>
+            <!-- Prompt Card with Copy Action -->
+            <div class="p-6 bg-card-theme rounded-2xl border border-theme">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-vial text-indigo-400"></i> Prompt Anatomy Example
+                    </h3>
+                    <button onclick="copyToClipboard('prompt-m1-code')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-lg border border-theme transition flex items-center gap-1.5">
+                        <i class="fa-regular fa-copy"></i> Copy Prompt
+                    </button>
+                </div>
+                <div class="code-bg-theme p-4 rounded-xl border border-theme text-xs font-mono text-emerald-300 leading-relaxed overflow-x-auto" id="prompt-m1-code">
+[ROLE]: You are a Senior Data Science Educator.
+[CONTEXT]: I am introducing Large Language Models to second-year Computer Science students.
+[TASK]: Explain the concept of "Tokens" in natural language processing.
+[CONSTRAINTS]: Use a real-world analogy. Keep it under 150 words. Output in bullet points.
+                </div>
             </div>
-        </div>
+        </section>
 
-        <!-- MINI QUIZ SECTION -->
-        <div class="card">
-            <h2>🧠 Knowledge Check Quiz</h2>
-            <p id="quizQuestion">What is the primary benefit of RAG (Retrieval-Augmented Generation)?</p>
-            <div id="quizOptions">
-                <button class="quiz-option" onclick="checkAnswer(false)">It completely eliminates the need for any prompts.</button>
-                <button class="quiz-option" onclick="checkAnswer(true)">It grounds LLM responses with external, up-to-date document retrieval.</button>
-                <button class="quiz-option" onclick="checkAnswer(false)">It makes neural network training 10x faster without GPUs.</button>
+        <!-- MODULE 2: UNDERSTANDING LLMS -->
+        <section id="mod-2" class="tab-content space-y-8">
+            <div class="border-b border-theme pb-6">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-3 inline-block">Module 02</span>
+                <h2 class="text-3xl font-bold tracking-tight mb-2">Understanding Large Language Models</h2>
+                <p class="text-secondary-theme leading-relaxed">Understand how Transformer architectures predict next tokens and how parameters dictate output behavior.</p>
             </div>
-            <p id="quizFeedback" style="font-weight: bold; margin-top: 10px;"></p>
-        </div>
-    </div>
 
+            <!-- Interactive Parameters Playground -->
+            <div class="p-6 bg-card-theme rounded-2xl border border-theme shadow-sm space-y-6">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-indigo-400"></i> Model Parameters Playground
+                </h3>
+
+                <!-- Temperature Slider -->
+                <div>
+                    <div class="flex justify-between text-sm font-medium mb-2">
+                        <span>Temperature: <strong id="tempVal" class="text-indigo-400">0.7</strong></span>
+                        <span id="tempMode" class="text-xs text-secondary-theme">Balanced Creativity</span>
+                    </div>
+                    <input type="range" id="tempSlider" min="0" max="1" step="0.1" value="0.7" oninput="updateParameters()" class="w-full accent-indigo-500">
+                </div>
+
+                <!-- Top-P Slider -->
+                <div>
+                    <div class="flex justify-between text-sm font-medium mb-2">
+                        <span>Top-P (Nucleus Sampling): <strong id="topPVal" class="text-indigo-400">0.9</strong></span>
+                        <span id="topPMode" class="text-xs text-secondary-theme">Broad Token Selection</span>
+                    </div>
+                    <input type="range" id="topPSlider" min="0.1" max="1" step="0.05" value="0.9" oninput="updateParameters()" class="w-full accent-indigo-500">
+                </div>
+
+                <!-- Live Simulation Output -->
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-theme">
+                    <span class="text-xs font-bold text-secondary-theme uppercase block mb-2">Simulated Completion Response:</span>
+                    <p id="paramOutput" class="text-sm font-mono text-indigo-300">"Artificial intelligence is transforming industries by automating repetitive tasks and augmenting human decision-making."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 3: CHAT MODELS & ROLES -->
+        <section id="mod-3" class="tab-content space-y-8">
+            <div class="border-b border-theme pb-6">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-3 inline-block">Module 03</span>
+                <h2 class="text-3xl font-bold tracking-tight mb-2">Chat Models & Conversational Roles</h2>
+                <p class="text-secondary-theme leading-relaxed">Master the tri-role framework: System, User, and Assistant roles in multi-turn dialogues.</p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="p-5 rounded-xl bg-purple-500/10 border border-purple-500/20">
+                    <div class="flex items-center gap-2 font-bold text-purple-400 mb-1">
+                        <i class="fa-solid fa-gear"></i> System Message
+                    </div>
+                    <p class="text-xs text-secondary-theme">Configures global instructions, persona, and strict safety boundaries for the model session.</p>
+                </div>
+                <div class="p-5 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                    <div class="flex items-center gap-2 font-bold text-blue-400 mb-1">
+                        <i class="fa-solid fa-user"></i> User Message
+                    </div>
+                    <p class="text-xs text-secondary-theme">Represents the human request, query, data payload, or prompt instructions.</p>
+                </div>
+                <div class="p-5 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                    <div class="flex items-center gap-2 font-bold text-emerald-400 mb-1">
+                        <i class="fa-solid fa-robot"></i> Assistant Response
+                    </div>
+                    <p class="text-xs text-secondary-theme">The generated output conditioned on the system instructions and user history context.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 4: DESIGNING LLM APPLICATIONS -->
+        <section id="mod-4" class="tab-content space-y-8">
+            <div class="border-b border-theme pb-6">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-3 inline-block">Module 04</span>
+                <h2 class="text-3xl font-bold tracking-tight mb-2">Designing LLM Applications</h2>
+                <p class="text-secondary-theme leading-relaxed">Advanced prompting techniques: Few-Shot, Chain-of-Thought (CoT), and JSON Schema Output enforcement.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="p-5 bg-card-theme rounded-2xl border border-theme shadow-sm">
+                    <h4 class="font-bold text-indigo-400 mb-2">Few-Shot Learning</h4>
+                    <p class="text-xs text-secondary-theme leading-relaxed">Providing 2-5 explicit examples in the prompt to teach the model complex patterns without fine-tuning.</p>
+                </div>
+                <div class="p-5 bg-card-theme rounded-2xl border border-theme shadow-sm">
+                    <h4 class="font-bold text-purple-400 mb-2">Chain-of-Thought (CoT)</h4>
+                    <p class="text-xs text-secondary-theme leading-relaxed">Instructing the model to "think step-by-step" to dramatically improve mathematical and logical reasoning.</p>
+                </div>
+                <div class="p-5 bg-card-theme rounded-2xl border border-theme shadow-sm">
+                    <h4 class="font-bold text-emerald-400 mb-2">Structured Outputs</h4>
+                    <p class="text-xs text-secondary-theme leading-relaxed">Enforcing strict JSON or XML schema outputs for automated parsing in backend software pipelines.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 5: PROMPTS CONTEXT AND RAG -->
+        <section id="mod-5" class="tab-content space-y-8">
+            <div class="border-b border-theme pb-6">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-3 inline-block">Module 05</span>
+                <h2 class="text-3xl font-bold tracking-tight mb-2">Prompts, Context & RAG Architecture</h2>
+                <p class="text-secondary-theme leading-relaxed">Retrieval-Augmented Generation (RAG) connects LLMs to custom knowledge bases to eliminate hallucinations.</p>
+            </div>
+
+            <!-- RAG Diagram -->
+            <div class="p-6 bg-card-theme rounded-2xl border border-theme">
+                <h3 class="font-bold text-lg mb-6">RAG Workflow Pipeline</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div class="p-4 bg-slate-900/60 rounded-xl border border-theme">
+                        <i class="fa-solid fa-file-arrow-up text-indigo-400 text-2xl mb-2"></i>
+                        <h5 class="font-bold text-sm">1. Document Ingestion</h5>
+                        <p class="text-xs text-secondary-theme mt-1">Files are chunked and converted into vector embeddings.</p>
+                    </div>
+                    <div class="p-4 bg-slate-900/60 rounded-xl border border-theme">
+                        <i class="fa-solid fa-magnifying-glass-location text-purple-400 text-2xl mb-2"></i>
+                        <h5 class="font-bold text-sm">2. Vector Search</h5>
+                        <p class="text-xs text-secondary-theme mt-1">User query finds matching context chunks from Vector DB.</p>
+                    </div>
+                    <div class="p-4 bg-slate-900/60 rounded-xl border border-theme">
+                        <i class="fa-solid fa-wand-magic-sparkles text-emerald-400 text-2xl mb-2"></i>
+                        <h5 class="font-bold text-sm">3. Augmented Prompt</h5>
+                        <p class="text-xs text-secondary-theme mt-1">Context + User Query sent to LLM for grounded answer.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 6: LABORATORY & SIMULATOR -->
+        <section id="mod-6" class="tab-content space-y-8">
+            <div class="border-b border-theme pb-6">
+                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-3 inline-block">Module 06</span>
+                <h2 class="text-3xl font-bold tracking-tight mb-2">Interactive Laboratory & Quiz</h2>
+                <p class="text-secondary-theme leading-relaxed">Test your prompt crafting in real-time and verify your knowledge with our built-in assessment tool.</p>
+            </div>
+
+            <!-- Prompt Simulator -->
+            <div class="p-6 bg-card-theme rounded-2xl border border-theme space-y-4">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-terminal text-indigo-400"></i> Interactive Prompt Sandbox
+                </h3>
+                <div>
+                    <label class="block text-xs font-bold text-secondary-theme uppercase mb-1">System Instructions</label>
+                    <input type="text" id="sysPrompt" value="You are a helpful coding assistant who responds concisely." class="w-full p-2.5 rounded-xl bg-slate-900/80 border border-theme text-xs font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-secondary-theme uppercase mb-1">User Input</label>
+                    <textarea id="userPrompt" rows="3" class="w-full p-2.5 rounded-xl bg-slate-900/80 border border-theme text-xs font-mono" placeholder="Write your prompt here..."></textarea>
+                </div>
+                <button onclick="runPromptSimulator()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition flex items-center gap-2">
+                    <i class="fa-solid fa-play text-xs"></i> Execute Simulation
+                </button>
+                <div id="simResultBox" class="p-4 rounded-xl bg-slate-900 border border-theme hidden">
+                    <span class="text-xs font-bold text-emerald-400 uppercase block mb-1">Model Output:</span>
+                    <p id="simResultText" class="text-xs font-mono text-slate-200 leading-relaxed"></p>
+                </div>
+            </div>
+
+            <!-- Knowledge Check Quiz -->
+            <div class="p-6 bg-card-theme rounded-2xl border border-theme space-y-4">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-circle-question text-indigo-400"></i> Self-Assessment Quiz
+                </h3>
+                <p class="text-sm font-medium">Which parameter controls the balance between random creative text and deterministic outputs?</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="quizOptions">
+                    <button onclick="answerQuiz(false, this)" class="p-3 rounded-xl bg-slate-800/60 border border-theme text-left text-xs font-medium hover:border-indigo-500 transition">A) Context Window Size</button>
+                    <button onclick="answerQuiz(true, this)" class="p-3 rounded-xl bg-slate-800/60 border border-theme text-left text-xs font-medium hover:border-indigo-500 transition">B) Temperature</button>
+                    <button onclick="answerQuiz(false, this)" class="p-3 rounded-xl bg-slate-800/60 border border-theme text-left text-xs font-medium hover:border-indigo-500 transition">C) Embedding Dimension</button>
+                    <button onclick="answerQuiz(false, this)" class="p-3 rounded-xl bg-slate-800/60 border border-theme text-left text-xs font-medium hover:border-indigo-500 transition">D) Stop Sequences</button>
+                </div>
+                <div id="quizFeedback" class="text-xs font-bold mt-2 hidden"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Application Logic -->
     <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            const current = html.getAttribute('data-theme');
-            html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+        let currentLang = 'en';
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.getElementById('btn-' + tabId).classList.add('active');
         }
 
-        function updateSimulation() {
-            const sys = document.getElementById('sysInput').value;
-            const user = document.getElementById('userInput').value;
-            const temp = document.getElementById('tempRange').value;
-            const topP = document.getElementById('topPRange').value;
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeText = document.getElementById('themeText');
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (html.getAttribute('data-theme') === 'dark') {
+                html.setAttribute('data-theme', 'light');
+                themeText.innerText = currentLang === 'en' ? "Light Mode" : "Açık Mod";
+                themeIcon.className = "fa-solid fa-sun text-amber-500";
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                themeText.innerText = currentLang === 'en' ? "Dark Mode" : "Koyu Mod";
+                themeIcon.className = "fa-solid fa-moon text-amber-400";
+            }
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'tr' : 'en';
+            document.getElementById('langText').innerText = currentLang.toUpperCase();
+            
+            if (currentLang === 'tr') {
+                document.getElementById('subHeader').innerText = "İnteraktif LLM Rehberi";
+                document.getElementById('navHeading').innerText = "Ders Modülleri";
+                document.querySelector('.mod-title-1').innerText = "01. Giriş";
+                document.querySelector('.mod-title-2').innerText = "02. LLM'leri Anlamak";
+                document.querySelector('.mod-title-3').innerText = "03. Sohbet Modelleri";
+                document.querySelector('.mod-title-4').innerText = "04. LLM Uygulamaları";
+                document.querySelector('.mod-title-5').innerText = "05. Bağlam ve RAG";
+                document.querySelector('.mod-title-6').innerText = "06. Laboratuvar";
+            } else {
+                document.getElementById('subHeader').innerText = "Interactive LLM Guide";
+                document.getElementById('navHeading').innerText = "Course Modules";
+                document.querySelector('.mod-title-1').innerText = "01. Introduction";
+                document.querySelector('.mod-title-2').innerText = "02. Understanding LLMs";
+                document.querySelector('.mod-title-3').innerText = "03. Chat Models";
+                document.querySelector('.mod-title-4').innerText = "04. LLM Applications";
+                document.querySelector('.mod-title-5').innerText = "05. Context & RAG";
+                document.querySelector('.mod-title-6').innerText = "06. Interactive Lab";
+            }
+        }
+
+        function updateParameters() {
+            const temp = parseFloat(document.getElementById('tempSlider').value);
+            const topP = parseFloat(document.getElementById('topPSlider').value);
             
             document.getElementById('tempVal').innerText = temp;
             document.getElementById('topPVal').innerText = topP;
 
-            let response = `[System Active: "${sys}"]\n[Params: Temp=${temp}, Top-P=${topP}]\n> Processing prompt: "${user}"\n\n`;
-            if (temp < 0.3) {
-                response += "Model Output: RAG enhances model accuracy by fetching precise context chunks from an external database before generating the final text response (Deterministic & Focused).";
-            } else if (temp > 0.7) {
-                response += "Model Output: ✨ RAG acts like an open-book exam for AI, dynamically gluing external knowledge bases directly into prompt context streams for real-time fact retrieval!";
+            const output = document.getElementById('paramOutput');
+            const mode = document.getElementById('tempMode');
+
+            if (temp <= 0.2) {
+                mode.innerText = "Deterministic & Precise";
+                output.innerText = '"Artificial intelligence refers to computer systems engineered to simulate human reasoning."';
+            } else if (temp <= 0.7) {
+                mode.innerText = "Balanced Creativity";
+                output.innerText = '"Artificial intelligence is transforming industries by automating repetitive tasks and augmenting decision-making."';
             } else {
-                response += "Model Output: Retrieval-Augmented Generation bridges internal LLM weights with external vector search indices to supply factual, verified context.";
+                mode.innerText = "Highly Creative / Random";
+                output.innerText = '"AI represents a flexible cognitive matrix unlocking unforeseen paradigms of creative problem solving!"';
             }
-            document.getElementById('consoleOutput').innerText = response;
         }
 
-        function checkAnswer(isCorrect) {
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert("Prompt copied to clipboard!");
+        }
+
+        function runPromptSimulator() {
+            const sys = document.getElementById('sysPrompt').value;
+            const user = document.getElementById('userPrompt').value;
+            const box = document.getElementById('simResultBox');
+            const text = document.getElementById('simResultText');
+
+            if (!user.trim()) {
+                alert("Please enter a prompt first.");
+                return;
+            }
+
+            box.classList.remove('hidden');
+            text.innerText = `[System Active: "${sys}"]\n\n[Response]: Executing instruction: "${user}". Output generated with strict compliance to context constraints.`;
+        }
+
+        function answerQuiz(isCorrect, btn) {
             const feedback = document.getElementById('quizFeedback');
+            feedback.classList.remove('hidden');
+
             if (isCorrect) {
-                feedback.style.color = "var(--success)";
-                feedback.innerText = "🎉 Correct! RAG connects external knowledge bases to reduce hallucinations.";
+                feedback.className = "text-xs font-bold mt-2 text-emerald-400";
+                feedback.innerText = "Correct! Temperature regulates the probability distribution over predicted tokens.";
+                btn.classList.add('bg-emerald-500/20', 'border-emerald-500');
             } else {
-                feedback.style.color = "#ef4444";
-                feedback.innerText = "❌ Incorrect. Try again! Think about how external data connects to LLMs.";
+                feedback.className = "text-xs font-bold mt-2 text-red-400";
+                feedback.innerText = "Incorrect. Try again!";
+                btn.classList.add('bg-red-500/20', 'border-red-500');
             }
         }
-
-        // Initialize simulation on load
-        updateSimulation();
     </script>
 </body>
 </html>
