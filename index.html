@@ -3,89 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prompt Engineering Masterclass & Interactive Guide</title>
+    <title>Prompt Engineering Masterclass & Interactive Platform</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-color: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent: #38bdf8;
-            --border: #334155;
-            --code-bg: #0f172a;
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --border: #1f2937;
+            --code-bg: #030712;
+            --success: #10b981;
         }
         [data-theme="light"] {
-            --bg-color: #f8fafc;
+            --bg-color: #f9fafb;
             --card-bg: #ffffff;
-            --text-color: #0f172a;
-            --text-muted: #64748b;
-            --accent: #0284c7;
-            --border: #e2e8f0;
-            --code-bg: #f1f5f9;
+            --text-color: #111827;
+            --text-muted: #4b5563;
+            --accent: #4f46e5;
+            --accent-hover: #4338ca;
+            --border: #e5e7eb;
+            --code-bg: #f3f4f6;
+            --success: #059669;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; margin: 0; padding: 20px; transition: background 0.3s, color 0.3s; }
-        .container { max-width: 900px; margin: 0 auto; }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        h1 { margin: 0; font-size: 1.8rem; color: var(--accent); }
-        .controls { display: flex; gap: 10px; }
-        button { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
+        .hero { background: linear-gradient(135deg, var(--accent), #9333ea); color: white; padding: 40px 20px; text-align: center; }
+        .hero h1 { margin: 0; font-size: 2.2rem; }
+        .hero p { opacity: 0.9; margin-top: 10px; }
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        .top-bar { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 20px; }
+        button { background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
         button:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        h2 { margin-top: 0; color: var(--accent); font-size: 1.4rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-        ul { padding-left: 20px; }
-        li { margin-bottom: 10px; }
-        a { color: var(--accent); text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .interactive-box { background: var(--code-bg); padding: 15px; border-radius: 6px; border: 1px solid var(--border); margin-top: 15px; }
-        input[type="range"] { width: 100%; margin: 10px 0; }
-        textarea { width: 100%; height: 80px; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); border-radius: 4px; padding: 8px; box-sizing: border-box; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 30px; margin-bottom: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        h2 { color: var(--accent); margin-top: 0; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .module-box { background: var(--code-bg); border: 1px solid var(--border); padding: 20px; border-radius: 8px; transition: transform 0.2s; }
+        .module-box:hover { transform: translateY(-3px); border-color: var(--accent); }
+        .interactive-playground { background: var(--code-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border); margin-top: 15px; }
+        textarea, input[type="text"] { width: 100%; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border); border-radius: 6px; padding: 10px; box-sizing: border-box; margin-top: 5px; font-family: inherit; }
+        .slider-group { margin: 15px 0; }
+        input[type="range"] { width: 100%; accent-color: var(--accent); }
+        .output-console { background: #000; color: #38bdf8; padding: 15px; border-radius: 6px; font-family: monospace; min-height: 60px; margin-top: 10px; white-space: pre-wrap; }
+        .quiz-option { display: block; width: 100%; text-align: left; margin: 8px 0; padding: 10px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
+        .quiz-option:hover { background: var(--accent); color: white; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Prompt Engineering & LLM Guide</h1>
-            <div class="controls">
-                <button onclick="toggleTheme()">🌓 Theme</button>
-            </div>
-        </header>
 
-        <div class="card">
-            <h2>Overview & Modules</h2>
-            <p>This repository provides a comprehensive breakdown of Large Language Models, prompt crafting, application design, context engineering, and RAG architectures.</p>
-            <ul>
-                <li><strong>01 - Introduction:</strong> Fundamentals of prompting and instruction tuning. (<a href="01-introduction.md" target="_blank">View File</a>)</li>
-                <li><strong>02 - Understanding LLMs:</strong> Architecture, training, and capabilities. (<a href="02-understanding-llms.md" target="_blank">View File</a>)</li>
-                <li><strong>03 - Chat Models:</strong> System roles, conversation turns, and formatting. (<a href="03-chat-models.md" target="_blank">View File</a>)</li>
-                <li><strong>04 - Designing LLM Applications:</strong> Patterns, workflows, and guardrails. (<a href="04-designing-llm-applications.md" target="_blank">View File</a>)</li>
-                <li><strong>05 - Context & RAG:</strong> Retrieval-Augmented Generation and vector search. (<a href="05-prompts-context-and-rag.md" target="_blank">View File</a>)</li>
-                <li><strong>06 - Laboratory Workbook:</strong> Hands-on prompts and evaluation exercises. (<a href="06-laboratory-workbook.md" target="_blank">View File</a>)</li>
-            </ul>
+    <div class="hero">
+        <h1>🚀 Prompt Engineering Masterclass</h1>
+        <p>Interactive platform built to explore LLMs, Prompt Design, Context Engineering & RAG Architecture.</p>
+    </div>
+
+    <div class="container">
+        <div class="top-bar">
+            <button onclick="toggleTheme()">🌓 Toggle Theme</button>
         </div>
 
+        <!-- MODULES SECTION -->
         <div class="card">
-            <h2>Interactive LLM Playground</h2>
-            <p>Test how parameters and system prompts alter model response behavior:</p>
-            
-            <label><strong>System Role / Instructions:</strong></label>
-            <textarea id="sysPrompt">You are a helpful expert technical tutor.</textarea>
-            
-            <label style="display:block; margin-top:10px;"><strong>Temperature (<span id="tempVal">0.7</span>):</strong></label>
-            <input type="range" id="tempRange" min="0" max="1" step="0.1" value="0.7" oninput="document.getElementById('tempVal').innerText=this.value">
-            
-            <div class="interactive-box">
-                <strong>Simulated Output Behavior:</strong>
-                <p id="outputSim" style="color: var(--text-muted); margin: 5px 0 0 0;">Response tuned with temperature 0.7 for creative yet focused explanations.</p>
+            <h2>📚 Course Modules & Comprehensive Content</h2>
+            <p>Explore the structured modules extracted and enhanced from the official repository notes:</p>
+            <div class="grid">
+                <div class="module-box">
+                    <h3>01. Introduction</h3>
+                    <p>Foundations of instruction tuning and effective prompting frameworks.</p>
+                    <a href="01-introduction.md" target="_blank">📄 View Raw Markdown</a>
+                </div>
+                <div class="module-box">
+                    <h3>02. Understanding LLMs</h3>
+                    <p>Deep dive into transformer architectures, pre-training, and scaling laws.</p>
+                    <a href="02-understanding-llms.md" target="_blank">📄 View Raw Markdown</a>
+                </div>
+                <div class="module-box">
+                    <h3>03. Chat Models</h3>
+                    <p>System instructions, role-playing, and conversation turn formatting.</p>
+                    <a href="03-chat-models.md" target="_blank">📄 View Raw Markdown</a>
+                </div>
+                <div class="module-box">
+                    <h3>04. LLM Application Design</h3>
+                    <p>Patterns, guardrails, chains, and building reliable AI workflows.</p>
+                    <a href="04-designing-llm-applications.md" target="_blank">📄 View Raw Markdown</a>
+                </div>
+                <div class="module-box">
+                    <h3>05. Context & RAG</h3>
+                    <p>Retrieval-Augmented Generation, vector embeddings, and context stuffing.</p>
+                    <a href="05-prompts-context-and-rag.md" target="_blank">📄 View Raw Markdown</a>
+                </div>
+                <div class="module-box">
+                    <h3>06. Laboratory Workbook</h3>
+                    <p>Practical hands-on exercises, evaluation criteria, and prompt templates.</p>
+                    <a href="06-laboratory-workbook.md" target="_blank">📄 View Raw Markdown</a>
+                </div>
             </div>
+        </div>
+
+        <!-- INTERACTIVE PLAYGROUND -->
+        <div class="card">
+            <h2>⚡ Interactive Prompt & Parameter Simulator</h2>
+            <p>Test how model hyperparameters change generation outputs dynamically:</p>
+            
+            <label><strong>System Instruction:</strong></label>
+            <input type="text" id="sysInput" value="You are an advanced AI engineering assistant." oninput="updateSimulation()">
+
+            <label style="display:block; margin-top: 15px;"><strong>User Prompt:</strong></label>
+            <textarea id="userInput" oninput="updateSimulation()">Explain Retrieval-Augmented Generation in one sentence.</textarea>
+
+            <div class="slider-group">
+                <label><strong>Temperature (<span id="tempVal">0.7</span>):</strong> Controls randomness.</label>
+                <input type="range" id="tempRange" min="0" max="1" step="0.1" value="0.7" oninput="updateSimulation()">
+            </div>
+
+            <div class="slider-group">
+                <label><strong>Top-P (<span id="topPVal">0.9</span>):</strong> Nucleus sampling threshold.</label>
+                <input type="range" id="topPRange" min="0.1" max="1" step="0.1" value="0.9" oninput="updateSimulation()">
+            </div>
+
+            <div class="interactive-playground">
+                <strong>Simulated Model Output:</strong>
+                <div class="output-console" id="consoleOutput">Loading simulation response...</div>
+            </div>
+        </div>
+
+        <!-- MINI QUIZ SECTION -->
+        <div class="card">
+            <h2>🧠 Knowledge Check Quiz</h2>
+            <p id="quizQuestion">What is the primary benefit of RAG (Retrieval-Augmented Generation)?</p>
+            <div id="quizOptions">
+                <button class="quiz-option" onclick="checkAnswer(false)">It completely eliminates the need for any prompts.</button>
+                <button class="quiz-option" onclick="checkAnswer(true)">It grounds LLM responses with external, up-to-date document retrieval.</button>
+                <button class="quiz-option" onclick="checkAnswer(false)">It makes neural network training 10x faster without GPUs.</button>
+            </div>
+            <p id="quizFeedback" style="font-weight: bold; margin-top: 10px;"></p>
         </div>
     </div>
 
     <script>
         function toggleTheme() {
             const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            html.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
+            const current = html.getAttribute('data-theme');
+            html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
         }
+
+        function updateSimulation() {
+            const sys = document.getElementById('sysInput').value;
+            const user = document.getElementById('userInput').value;
+            const temp = document.getElementById('tempRange').value;
+            const topP = document.getElementById('topPRange').value;
+            
+            document.getElementById('tempVal').innerText = temp;
+            document.getElementById('topPVal').innerText = topP;
+
+            let response = `[System Active: "${sys}"]\n[Params: Temp=${temp}, Top-P=${topP}]\n> Processing prompt: "${user}"\n\n`;
+            if (temp < 0.3) {
+                response += "Model Output: RAG enhances model accuracy by fetching precise context chunks from an external database before generating the final text response (Deterministic & Focused).";
+            } else if (temp > 0.7) {
+                response += "Model Output: ✨ RAG acts like an open-book exam for AI, dynamically gluing external knowledge bases directly into prompt context streams for real-time fact retrieval!";
+            } else {
+                response += "Model Output: Retrieval-Augmented Generation bridges internal LLM weights with external vector search indices to supply factual, verified context.";
+            }
+            document.getElementById('consoleOutput').innerText = response;
+        }
+
+        function checkAnswer(isCorrect) {
+            const feedback = document.getElementById('quizFeedback');
+            if (isCorrect) {
+                feedback.style.color = "var(--success)";
+                feedback.innerText = "🎉 Correct! RAG connects external knowledge bases to reduce hallucinations.";
+            } else {
+                feedback.style.color = "#ef4444";
+                feedback.innerText = "❌ Incorrect. Try again! Think about how external data connects to LLMs.";
+            }
+        }
+
+        // Initialize simulation on load
+        updateSimulation();
     </script>
 </body>
 </html>
